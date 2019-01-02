@@ -5,7 +5,7 @@ const { Strategy: LocalStrategy } = require('passport-local');
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#Assigning_to_new_variable_names
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 
-const { User } = require('../users/models');
+const { User } = require('../models/user');
 const { JWT_SECRET } = require('../config');
 
 const localStrategy = new LocalStrategy((username, password, callback) => {
@@ -13,6 +13,7 @@ const localStrategy = new LocalStrategy((username, password, callback) => {
   User.findOne({ username: username })
     .then(_user => {
       user = _user;
+      console.log("flag", user)
       if (!user) {
         // Return a rejected promise so we break out of the chain of .thens.
         // Any errors like this will be handled in the catch block.
@@ -49,6 +50,7 @@ const jwtStrategy = new JwtStrategy(
     algorithms: ['HS256']
   },
   (payload, done) => {
+    console.log(payload.user)
     done(null, payload.user);
   }
 );

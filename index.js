@@ -1,4 +1,6 @@
 'use strict';
+
+// Lib
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -13,10 +15,12 @@ const passport = require('passport');
 // console.log(jimmy); // Stewart - the variable name is jimmy, not james
 // console.log(bobby); // De Niro - the variable name is bobby, not robert
 const { router: usersRouter } = require('./users');
+const { router: addressesRouter } = require('./addresses');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 
 mongoose.Promise = global.Promise;
 
+// DB
 const { PORT, DATABASE_URL } = require('./config');
 
 const app = express();
@@ -38,21 +42,15 @@ app.use(function (req, res, next) {
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
+const jwtAuth = passport.authenticate('jwt', { session: false });
+
+// Routes
+app.use('/api/addresses', addressesRouter);
+// app.use('/api/emails', jwtAuth, emailsRouter);
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
 
-const jwtAuth = passport.authenticate('jwt', { session: false });
 
-// A protected endpoint which needs a valid JWT to access it
-app.get('/api/protected', jwtAuth, (req, res) => {
-  return res.json({
-    data: 'rosebud'
-  });
-});
-
-app.use('*', (req, res) => {
-  return res.status(404).json({ message: 'Not Found' });
-});
 
 // Referenced by both runServer and closeServer. closeServer
 // assumes runServer has run and set `server` to a server object
