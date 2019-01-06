@@ -13,7 +13,6 @@ const localStrategy = new LocalStrategy((username, password, callback) => {
   User.findOne({ username: username })
     .then(_user => {
       user = _user;
-      console.log("flag", user)
       if (!user) {
         // Return a rejected promise so we break out of the chain of .thens.
         // Any errors like this will be handled in the catch block.
@@ -50,7 +49,6 @@ const jwtStrategy = new JwtStrategy(
     algorithms: ['HS256']
   },
   (payload, done) => {
-    console.log(payload.user)
     done(null, payload.user);
   }
 );

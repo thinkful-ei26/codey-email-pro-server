@@ -1,4 +1,4 @@
-'user strict';
+'use strict';
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
@@ -23,7 +23,9 @@ const EmailSchema = new mongoose.Schema({
     }
 });
 
-schema.set('timestamps', true);
+EmailSchema.index({userId: 1, title: 1}, {unique: true});
+
+EmailSchema.set('timestamps', true);
 
 const Email = mongoose.model('Email', EmailSchema);
 

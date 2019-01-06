@@ -16,6 +16,7 @@ const passport = require('passport');
 // console.log(bobby); // De Niro - the variable name is bobby, not robert
 const { router: usersRouter } = require('./users');
 const { router: addressesRouter } = require('./addresses');
+const { router: emailsRouter } = require('./emails');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 
 mongoose.Promise = global.Promise;
@@ -42,15 +43,11 @@ app.use(function (req, res, next) {
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-const jwtAuth = passport.authenticate('jwt', { session: false });
-
 // Routes
-app.use('/api/addresses', addressesRouter);
-// app.use('/api/emails', jwtAuth, emailsRouter);
+app.use('/api/addresses/', addressesRouter);
+app.use('/api/emails/', emailsRouter);
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
-
-
 
 // Referenced by both runServer and closeServer. closeServer
 // assumes runServer has run and set `server` to a server object
